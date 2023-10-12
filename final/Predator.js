@@ -1,5 +1,6 @@
-class Predator extends livingCreature{
+class Predator extends LivingCreature{
     constructor(x, y, index) {
+        super(x,y,index)
         this.energy = 13;
         this.directions = [];
     }
@@ -23,8 +24,6 @@ class Predator extends livingCreature{
     }
 
 
-
-
     mul() {
         var newCell = random(this.chooseCell(2));
         if (newCell) {
@@ -33,9 +32,6 @@ class Predator extends livingCreature{
             matrix[newCell[1]][newCell[0]] = 3;
         }
     }
-
-
-
 
     eat() {
         let foods = this.chooseCell(2)
