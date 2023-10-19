@@ -1,9 +1,9 @@
-class Bomb {
+let LivingCreature = require("./livingCreature");
+let random = require("./random")
+module.exports = class Bomb extends LivingCreature {
     constructor(x, y, index) {
-        this.x = x;
-        this.y = y;
-        this.energy = 20;
-        this.index = index;
+        super(x, y, index)
+        this.energy = 8;
         this.directions = [];
     }
 
@@ -23,21 +23,9 @@ class Bomb {
 
 
     chooseCell(character) {
-        var found = [];
         this.getNewCoordinates()
-        for (var i in this.directions) {
-            var x = this.directions[i][0];
-            var y = this.directions[i][1];
-            if (x >= 0 && x < matrix[0].length && y >= 0 && y < matrix.length) {
-                if (matrix[y][x] == character) {
-                    found.push(this.directions[i]);
-                }
-            }
-
-        }
-        return found;
+        return super.chooseCell(character)
     }
-
 
 
     eat() {
@@ -78,7 +66,7 @@ class Bomb {
             }
         }
 
-        else if(foody){
+        else if (foody) {
             this.energy++;
             matrix[this.y][this.x] = 0
             let newX = foody[0]
@@ -94,7 +82,7 @@ class Bomb {
             }
         }
 
-        
+
         else {
 
             this.energy--
