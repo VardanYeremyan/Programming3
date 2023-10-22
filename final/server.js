@@ -1,17 +1,3 @@
-// var express = require("express");
-// var app = express();
-// var server = require('http').Server(app);
-// var io = require('socket.io')(server);
-
-// app.use(express.static("."));
-
-// app.get("/", function (req, res) {
-//    res.redirect("index.html");
-// });
-
-// app.listen(3000, function () {
-//    console.log("Example is running on port 3000");
-// });
 
 var express = require("express");
 var app = express();
@@ -19,9 +5,9 @@ var server = require('http').Server(app);
 var io = require('socket.io')(server);
 app.use(express.static("."));
 app.get("/", function (req, res) {
-res.redirect("index.html");
+   res.redirect("index.html");
 });
-server.listen(3000)
+server.listen(3001)
 
 let random = require("./random")
 
@@ -31,11 +17,13 @@ grassEaterArr = []
 predatorArr = []
 bombArr = []
 doctorArr = []
+banArr = []
 let Grass = require("./grass")
 let GrassEater = require("./grassEater")
 let Predator = require("./Predator")
 let Bomb = require("./bomb")
 let Doctor = require("./doctor")
+let Ban = require("./ban")
 
 let num1 = 140;
 let num2 = 140;
@@ -72,6 +60,7 @@ function createGame() {
    character(3, 250)
    character(4, 45)
    character(5, 50)
+   character(6, 40)
 
    for (var y = 0; y < matrix.length; y++) {
       for (var x = 0; x < matrix[y].length; x++) {
@@ -99,6 +88,10 @@ function createGame() {
             var gr = new Doctor(x, y, 5);
             doctorArr.push(gr)
          }
+         else if (matrix[y][x] == 6) {
+            var gr = new Ban(x, y, 6);
+            banArr.push(gr)
+         }
       }
    }
 }
@@ -122,23 +115,26 @@ function playGame() {
    for (var i in doctorArr) {
       doctorArr[i].cure();
    }
+   for (var i in banArr) {
+      banArr[i].eat();
+   }
    io.emit('update matrix', matrix)
-}
+}  
 
 
 
 
-let intervalID;
-function startPlaying() {
-   clearInterval(IntervalID)
-   intervalID = setInterval(() => {
-      playGame()
-   }, 1000);
-}
+
 
 
 io.on('connection', function (socket) {
    socket.emit('update matrix', matrix)
    createGame()
-   startPlaying()
+
 })
+
+
+setInterval(() => {
+   playGame()
+}, 1000);
+

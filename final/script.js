@@ -1,9 +1,9 @@
 const socket = io()
-let side = 14
-let sideX = 20
-let sideY =  20
+let side = 15
+let sideX = 110
+let sideY =  70
 
-socket.on('update matrix', drawful)
+
 
 
 function setup() {
@@ -11,7 +11,7 @@ function setup() {
     background('#acacac');
 }
 
-function drawful(matrix) {
+function drawful(matrix) { 
     for (var y = 0; y < matrix.length; y++) {
         for (var x = 0; x < matrix[y].length; x++) {
 
@@ -30,9 +30,13 @@ function drawful(matrix) {
             else if(matrix[y][x] == 5) {
                 fill("purple")
             }
-            else {
+            else if(matrix[y][x] == 2){
                 fill("yellow")
             }
+            else if(matrix[y][x] == 6){
+                fill("#00EFED")
+            }
+            
 
             rect(x * side, y * side, side, side);
 
@@ -41,3 +45,17 @@ function drawful(matrix) {
 
 }
 
+var clickCount = 0;
+function clickHandler(evt){
+   clickCount++;
+   console.log(evt);
+   var str = "Thanks for clicking " + clickCount;
+   this.innerText = str;
+}
+
+var p = document.getElementById("pElement");
+p.addEventListener("click", clickHandler);
+
+
+
+socket.on('update matrix', drawful)

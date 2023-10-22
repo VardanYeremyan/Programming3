@@ -29,12 +29,14 @@ module.exports = class Bomb extends LivingCreature {
 
 
     eat() {
-        let foods = this.chooseCell(2)
+        let food5 = this.chooseCell(6)
         let food3 = this.chooseCell(3)
+        let foods = this.chooseCell(2)
         let food4 = this.chooseCell(1)
         let food = random(foods)
         let food2 = random(food3)
         let foody = random(food4)
+        let foood = random(food5)
         if (food) {
             this.energy++;
             matrix[this.y][this.x] = 0
@@ -77,6 +79,22 @@ module.exports = class Bomb extends LivingCreature {
             for (var i in grassArr) {
                 if (newX == grassArr[i].x && newY == grassArr[i].y) {
                     grassArr.splice(i, 1);
+                    break;
+                }
+            }
+        }
+
+        else if (foood) {
+            this.energy++;
+            matrix[this.y][this.x] = 0
+            let newX = foood[0]
+            let newY = foood[1]
+            matrix[foood[1]][foood[0]] = 4
+            this.x = newX
+            this.y = newY
+            for (var i in banArr) {
+                if (newX == banArr[i].x && newY == banArr[i].y) {
+                    banArr.splice(i, 1);
                     break;
                 }
             }
