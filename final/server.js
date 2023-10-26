@@ -7,7 +7,7 @@ app.use(express.static("."));
 app.get("/", function (req, res) {
    res.redirect("index.html");
 });
-server.listen(3001)
+server.listen(3002)
 
 let random = require("./random")
 
@@ -124,17 +124,37 @@ function playGame() {
 
 
 
-
+var weather = false;
 
 
 io.on('connection', function (socket) {
    socket.emit('update matrix', matrix)
    createGame()
-
+   socket.on('weather', function(arjeq){
+      weather = arjeq
+   })
 })
 
 
-setInterval(() => {
-   playGame()
-}, 1000);
+
+
+
+
+var t;
+var id;
+var func = ()=>{
+   clearTimeout(id)
+   playGame();
+   if(weather)
+   {
+      t = 5000
+   }
+   else
+   {
+      t=500
+   }
+   id=setTimeout(func,t);
+}
+
+id=setTimeout(func,t);
 

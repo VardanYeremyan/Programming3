@@ -87,13 +87,14 @@ module.exports = class Ban extends LivingCreature {
     }
 
 
-    die() {
-        matrix[this.y][this.x] = 0;
+    die() { 
+       
         for (var i in banArr) {
             if (this.x == banArr[i].x && this.y == banArr[i].y) {
                 banArr.splice(i, 1);
                 break;
             }
         }
+        matrix[this.y][this.x] = 0;
     }
 }

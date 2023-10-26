@@ -2,9 +2,12 @@ const socket = io()
 let side = 15
 let sideX = 110
 let sideY =  70
+let summer = document.getElementById('pElement')
+let winter = document.getElementById('ppElement')
 
-
-
+socket.on('update matrix', (data)=>{
+    drawful(data) 
+})
 
 function setup() {
     createCanvas(sideX * side, sideY * side);
@@ -17,6 +20,9 @@ function drawful(matrix) {
 
             if (matrix[y][x] == 1) {
                 fill("green");
+                if(arjeq==true){
+                    fill("white")
+                }
             }
             else if (matrix[y][x] == 0) {
                 fill("#acacac");
@@ -45,17 +51,18 @@ function drawful(matrix) {
 
 }
 
-var clickCount = 0;
-function clickHandler(evt){
-   clickCount++;
-   console.log(evt);
-   var str = "Thanks for clicking " + clickCount;
-   this.innerText = str;
-}
+var arjeq = false
 
-var p = document.getElementById("pElement");
-p.addEventListener("click", clickHandler);
+function click(evt) {
+    arjeq = false
+    socket.emit('weather', arjeq)
+ }
+ summer.addEventListener("click", click);
 
 
-
-socket.on('update matrix', drawful)
+ function click1(evt) {
+    arjeq = true
+    socket.emit('weather', arjeq)
+ }
+ winter.addEventListener("click", click1);
+ 
