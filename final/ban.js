@@ -31,7 +31,7 @@ module.exports = class Ban extends LivingCreature {
     mul() {
         var newCell = random(this.chooseCell(3));
         if (newCell) {
-            var eater = new Ban(newCell[0], newCell[3], this.index);
+            var eater = new Ban(newCell[0], newCell[1], this.index);
             grassEaterArr.push(eater);
             matrix[newCell[1]][newCell[0]] = 6;
         }
@@ -48,9 +48,10 @@ module.exports = class Ban extends LivingCreature {
             matrix[this.y][this.x] = 0
             let newX = food[0]
             let newY = food[1]
-            matrix[food[1]][food[0]] = 6
+            matrix[newY][newX] = 6
             this.x = newX
             this.y = newY
+            console.log("eat", newX, newY);
             for (var i in banArr) {
                 if (newX == predatorArr[i].x && newY == predatorArr[i].y) {
                     predatorArr.splice(i, 1);
@@ -79,6 +80,7 @@ module.exports = class Ban extends LivingCreature {
             matrix[newY][newX] = 6
             this.x = newX
             this.y = newY
+            console.log("move", newX, newY);
         }
 
         if (this.energy <= 0) {
@@ -88,13 +90,13 @@ module.exports = class Ban extends LivingCreature {
 
 
     die() { 
-       
+        console.log("die", this.x, this.y);
+        matrix[this.y][this.x] = 0;
         for (var i in banArr) {
             if (this.x == banArr[i].x && this.y == banArr[i].y) {
                 banArr.splice(i, 1);
                 break;
             }
         }
-        matrix[this.y][this.x] = 0;
     }
 }

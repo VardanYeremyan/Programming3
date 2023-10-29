@@ -3,11 +3,11 @@ var express = require("express");
 var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
+var fs = require("fs");
 app.use(express.static("."));
 app.get("/", function (req, res) {
    res.redirect("index.html");
 });
-server.listen(3002)
 
 let random = require("./random")
 
@@ -18,12 +18,14 @@ predatorArr = []
 bombArr = []
 doctorArr = []
 banArr = []
+hrdehArr = []
 let Grass = require("./grass")
 let GrassEater = require("./grassEater")
 let Predator = require("./Predator")
 let Bomb = require("./bomb")
 let Doctor = require("./doctor")
 let Ban = require("./ban")
+let Hrdeh = require("./hrdeh")
 
 let num1 = 140;
 let num2 = 140;
@@ -40,7 +42,6 @@ function createMatrix(num1, num2) {
 
 
 
-
 function character(index, count) {
    for (let a = 0; a < count; a++) {
       var x = Math.floor(random(num1))
@@ -52,15 +53,37 @@ function character(index, count) {
 }
 
 
+var weather = false;
+var krak;
+
+
+io.on('connection', function (socket) {
+   socket.emit('update matrix', matrix)
+   socket.on('weather', function (arjeq) {
+      weather = arjeq
+   })
+   socket.on('krak', function (value) {
+      krak = value
+   })
+   
+
+   socket.on('Total statistics', (data) => {
+      fs.writeFileSync('data.json', JSON.stringify(data))
+      socket.emit('display statistics', data)
+   })
+})
+
+
 
 function createGame() {
    createMatrix(num1, num2)
-   character(1, 200)
-   character(2, 400)
+   character(1, 400)
+   character(2, 440)
    character(3, 250)
    character(4, 45)
-   character(5, 50)
+   character(5, 40)
    character(6, 40)
+   character(7,300)
 
    for (var y = 0; y < matrix.length; y++) {
       for (var x = 0; x < matrix[y].length; x++) {
@@ -92,9 +115,16 @@ function createGame() {
             var gr = new Ban(x, y, 6);
             banArr.push(gr)
          }
+         else if (matrix[y][x] == 7) {
+            if(krak){
+            var gr = new Hrdeh(x, y, 7);
+            hrdehArr.push(gr)
+            }
+         }
       }
    }
 }
+createGame()
 
 
 
@@ -102,7 +132,9 @@ function playGame() {
    for (var i in grassArr) {
       grassArr[i].mul();
    }
-
+   for (var i in hrdehArr) {
+      hrdehArr[i].mul();
+   }
    for (var i in grassEaterArr) {
       grassEaterArr[i].eat();
    }
@@ -119,22 +151,9 @@ function playGame() {
       banArr[i].eat();
    }
    io.emit('update matrix', matrix)
-}  
+}
 
-
-
-
-var weather = false;
-
-
-io.on('connection', function (socket) {
-   socket.emit('update matrix', matrix)
-   createGame()
-   socket.on('weather', function(arjeq){
-      weather = arjeq
-   })
-})
-
+setInterval(() => playGame(), 1000);
 
 
 
@@ -142,19 +161,20 @@ io.on('connection', function (socket) {
 
 var t;
 var id;
-var func = ()=>{
+var func = () => {
    clearTimeout(id)
    playGame();
-   if(weather)
-   {
+   if (weather) {
       t = 5000
    }
-   else
-   {
-      t=500
+   else {
+      t = 500
    }
-   id=setTimeout(func,t);
+   id = setTimeout(func, t);
 }
 
-id=setTimeout(func,t);
+id = setTimeout(func, t);
 
+
+
+server.listen(3002, () => console.log("server running"))
